@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kafela's Agenda</title>
+    <meta name="description" content="Aplikasi manajemen jadwal agenda studio, booking web, struk pembayaran, dan keuangan vendor." />
+    <meta property="og:title" content="Kafela's Agenda" />
+    <meta property="og:description" content="Aplikasi manajemen jadwal agenda studio, booking web, struk pembayaran, dan keuangan vendor." />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="theme-color" content="#34495E" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="Kafela's Agenda" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="icon" type="image/svg+xml" href="/logo-kafela.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  </head>
+  <body class="bg-slate-950 text-slate-100 antialiased selection:bg-sky-500/30">
+    <script>
+      (function () {
+        var path = window.location.pathname.replace(/^\/+|\/+$/g, '');
+        var search = window.location.search || '';
+        var extraQuery = search ? '&' + search.substring(1) : '';
+
+        // 1. Rute Khusus Super Admin: jangan redirect ke profil.html
+        if (path === 'super-admin' || search.indexOf('mode=super-admin') !== -1 || search.indexOf('super_admin=1') !== -1) {
+          return;
+        }
+
+        // 2. Rute Booking Web Publik: /b/:slug -> /booking.html?id=:slug
+        if (path.indexOf('b/') === 0) {
+          var bookingUser = path.substring(2).replace(/^\/+|\/+$/g, '');
+          if (bookingUser && bookingUser.indexOf('/') === -1) {
+            window.location.replace('/booking.html?id=' + encodeURIComponent(bookingUser) + extraQuery);
+            return;
+          }
+        }
+
+        // 3. Rute Privat Kasir & Agenda: /app, :slug/app, atau ?app=1 -> Tetap di App.tsx (buka kasir)
+        if (path === 'app' || path.endsWith('/app') || path.indexOf('/app') !== -1 || search.indexOf('app=1') !== -1 || search.indexOf('brand=') !== -1) {
+          return;
+        }
+
+        // 4. Deteksi Server Lokal & Development (npm run dev / localhost / IP lokal / Port dev):
+        // Jangan pernah me-redirect otomatis ke profil.html saat sedang menjalankan dev server!
+        var host = window.location.hostname.toLowerCase();
+        var port = window.location.port;
+        var isLocal =
+          port !== '' ||
+          host === 'localhost' ||
+          host === '127.0.0.1' ||
+          host === '0.0.0.0' ||
+          host.indexOf('192.168.') === 0 ||
+          host.indexOf('10.') === 0 ||
+          host.indexOf('172.') === 0 ||
+          host.indexOf('.run.app') !== -1 ||
+          host.indexOf('.local') !== -1;
+
+        if (isLocal) {
+          return;
+        }
+
+        // 5. Pengalihan khusus Domain Produksi (Custom Domain & Slug Brand di Firebase Hosting)
+        var sub = '';
+        if (host.indexOf('.web.app') !== -1) {
+          sub = host.split('.web.app')[0].split('.').pop();
+        } else if (host.indexOf('.firebaseapp.com') !== -1) {
+          sub = host.split('.firebaseapp.com')[0].split('.').pop();
+        } else if (host !== 'kflsagnd.web.app' && host !== 'kafilasuci4.web.app' && host !== 'kafilasuci3.web.app') {
+          sub = host.replace(/^www\./, '');
+        }
+
+        if (sub && sub !== 'kflsagnd' && sub !== 'kafilasuci4' && sub !== 'kafilasuci3') {
+          if (path === 'b' || path === 'booking') {
+            window.location.replace('/booking.html?id=' + encodeURIComponent(sub) + extraQuery);
+            return;
+          }
+          // Jika pengunjung membuka root (/) atau /index.html di domain produksi, langsung buka PROFIL BRAND!
+          if (!path || path === 'index.html') {
+            window.location.replace('/profil.html?id=' + encodeURIComponent(sub) + extraQuery);
+            return;
+          }
+        }
+
+        // 6. Deteksi Rute Web Profil Brand Publik di domain produksi: /:slug -> /profil.html?id=:slug
+        if (path && path !== 'index.html' && path !== 'app' && path.indexOf('/') === -1 && path.indexOf('.') === -1) {
+          window.location.replace('/profil.html?id=' + encodeURIComponent(path) + extraQuery);
+          return;
+        }
+      })();
+    </script>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

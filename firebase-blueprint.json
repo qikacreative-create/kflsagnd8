@@ -1,0 +1,177 @@
+{
+  "entities": {
+    "Owner": {
+      "title": "Owner",
+      "description": "Profil pemilik studio dan konfigurasi halaman web brand",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "maxLength": 128 },
+        "namaOwner": { "type": "string", "maxLength": 120 },
+        "namaBrand": { "type": "string", "maxLength": 120 },
+        "username": { "type": "string", "maxLength": 64 },
+        "noWhatsApp": { "type": "string", "maxLength": 64 },
+        "email": { "type": "string", "maxLength": 128 },
+        "paketAktif": { "type": "string", "enum": ["Starter", "Pro", "Ultimate"] },
+        "saldo": { "type": "number" },
+        "tanggalDaftar": { "type": "number" },
+        "tanggalLangganan": { "type": "number" }
+      },
+      "required": ["uid", "namaBrand"]
+    },
+    "Staff": {
+      "title": "Staff",
+      "description": "Data anggota tim dan indeks otorisasi kru studio",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "maxLength": 128 },
+        "nama": { "type": "string", "maxLength": 120 },
+        "username": { "type": "string", "maxLength": 64 },
+        "loginId": { "type": "string", "maxLength": 128 },
+        "noWhatsApp": { "type": "string", "maxLength": 32 },
+        "role": { "type": "string", "enum": ["admin", "anggota"] },
+        "posisi": { "type": "string", "maxLength": 64 },
+        "namaBrand": { "type": "string", "maxLength": 120 },
+        "ownerParentId": { "type": "string", "maxLength": 128 }
+      },
+      "required": ["uid", "role", "ownerParentId"]
+    },
+    "Jadwal": {
+      "title": "Jadwal",
+      "description": "Jadwal acara, reservasi klien, dan transaksi kasir studio",
+      "type": "object",
+      "properties": {
+        "idJadwal": { "type": "string", "maxLength": 128 },
+        "namaAcara": { "type": "string", "maxLength": 200 },
+        "namaKlien": { "type": "string", "maxLength": 120 },
+        "waPic": { "type": "string", "maxLength": 32 },
+        "paket": { "type": "string", "maxLength": 160 },
+        "lokasi": { "type": "string", "maxLength": 500 },
+        "status": { "type": "string", "maxLength": 64 },
+        "sumber": { "type": "string", "maxLength": 32 },
+        "hargaKotor": { "type": "number" },
+        "dpDibayar": { "type": "number" },
+        "waktuMulai": { "type": "number" },
+        "tanggalMulai": { "type": "number" }
+      },
+      "required": ["idJadwal", "namaAcara"]
+    },
+    "PaketLayanan": {
+      "title": "PaketLayanan",
+      "description": "Katalog paket layanan dan daftar harga studio",
+      "type": "object",
+      "properties": {
+        "idPaket": { "type": "string", "maxLength": 128 },
+        "namaPaket": { "type": "string", "maxLength": 160 },
+        "hargaPaket": { "type": "number" },
+        "deskripsiPaket": { "type": "string", "maxLength": 2000 },
+        "urutan": { "type": "number" }
+      },
+      "required": ["idPaket", "namaPaket", "hargaPaket"]
+    },
+    "GaleriWeb": {
+      "title": "GaleriWeb",
+      "description": "Slot foto portofolio halaman web studio",
+      "type": "object",
+      "properties": {
+        "url": { "type": "string" },
+        "caption": { "type": "string", "maxLength": 300 }
+      },
+      "required": ["url"]
+    },
+    "Pengaturan": {
+      "title": "Pengaturan",
+      "description": "Informasi rekening bank dan pengaturan pembayaran studio",
+      "type": "object",
+      "properties": {
+        "bankUtama": { "type": "string", "maxLength": 80 },
+        "rekUtama": { "type": "string", "maxLength": 64 },
+        "namaUtama": { "type": "string", "maxLength": 120 },
+        "bankAlternatif": { "type": "string", "maxLength": 80 },
+        "rekAlternatif": { "type": "string", "maxLength": 64 },
+        "namaAlternatif": { "type": "string", "maxLength": 120 },
+        "linkPembayaran": { "type": "string", "maxLength": 500 },
+        "catatanRekening": { "type": "string", "maxLength": 1000 }
+      }
+    },
+    "ArsipKompresi": {
+      "title": "ArsipKompresi",
+      "description": "Dokumen arsip bulanan berisi daftar jadwal lama terkompresi",
+      "type": "object",
+      "properties": {
+        "bulan_tahun": { "type": "string", "maxLength": 32 },
+        "terakhir_diupdate": { "type": "number" },
+        "data_event": { "type": "array" }
+      },
+      "required": ["bulan_tahun"]
+    },
+    "Pelanggan": {
+      "title": "Pelanggan",
+      "description": "Data kontak dan catatan riwayat pelanggan studio",
+      "type": "object",
+      "properties": {
+        "idPelanggan": { "type": "string", "maxLength": 128 },
+        "nama": { "type": "string", "maxLength": 120 },
+        "noWhatsApp": { "type": "string", "maxLength": 32 },
+        "catatan": { "type": "string", "maxLength": 1000 },
+        "createdAt": { "type": "number" }
+      },
+      "required": ["idPelanggan", "nama", "noWhatsApp"]
+    },
+    "BrandRegistry": {
+      "title": "BrandRegistry",
+      "description": "Indeks direktori pendaftaran brand multi-tenant",
+      "type": "object",
+      "properties": {
+        "slug": { "type": "string", "maxLength": 64 },
+        "namaBrand": { "type": "string", "maxLength": 120 },
+        "ownerId": { "type": "string", "maxLength": 128 },
+        "tier": { "type": "string", "enum": ["Starter", "Pro", "Ultimate"] },
+        "status": { "type": "string", "enum": ["AKTIF", "SUSPENDED", "TRIAL"] },
+        "saldo": { "type": "number" }
+      },
+      "required": ["slug", "namaBrand", "ownerId"]
+    }
+  },
+  "firestore": {
+    "/brands_registry/{slug}": {
+      "schema": "BrandRegistry",
+      "description": "Indeks direktori pendaftaran dan lisensi brand multi-tenant"
+    },
+    "/owners/{ownerId}": {
+      "schema": "Owner",
+      "description": "Dokumen profil pemilik studio"
+    },
+    "/owners/{ownerId}/tim/{staffId}": {
+      "schema": "Staff",
+      "description": "Data anggota tim milik pemilik studio"
+    },
+    "/owners/{ownerId}/jadwal/{jadwalId}": {
+      "schema": "Jadwal",
+      "description": "Jadwal milik pemilik studio"
+    },
+    "/owners/{ownerId}/paket_layanan/{paketId}": {
+      "schema": "PaketLayanan",
+      "description": "Katalog paket layanan studio"
+    },
+    "/owners/{ownerId}/galeri_web/{galeriId}": {
+      "schema": "GaleriWeb",
+      "description": "Galeri foto portofolio web studio"
+    },
+    "/owners/{ownerId}/pengaturan/{pengaturanId}": {
+      "schema": "Pengaturan",
+      "description": "Pengaturan rekening dan konfigurasi studio"
+    },
+    "/owners/{ownerId}/arsip_kompresi/{arsipId}": {
+      "schema": "ArsipKompresi",
+      "description": "Arsip jadwal lama terkompresi"
+    },
+    "/owners/{ownerId}/pelanggan/{pelangganId}": {
+      "schema": "Pelanggan",
+      "description": "Riwayat data kontak pelanggan studio"
+    },
+    "/tim_studio/{staffId}": {
+      "schema": "Staff",
+      "description": "Indeks peran staf untuk otorisasi cepat"
+    }
+  }
+}

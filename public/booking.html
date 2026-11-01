@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Booking Online</title>
+    <link rel="icon" type="image/svg+xml" href="/logo-kafela.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        body[data-theme="LUXURY_GOLD"] {
+            background: radial-gradient(circle at top, #292014 0%, #09090b 80%);
+        }
+        body[data-theme="LUXURY_GOLD"] .form-container {
+            background: #141418;
+            border: 1px solid #2e291f;
+            color: #faf8f5;
+        }
+        body[data-theme="LUXURY_GOLD"] .header-banner {
+            background: linear-gradient(135deg, #1c1917 0%, #292014 100%);
+            border: 1px solid #443722;
+        }
+        body[data-theme="LUXURY_GOLD"] h2 {
+            color: #f3e5ab;
+        }
+        body[data-theme="LUXURY_GOLD"] label {
+            color: #d6d3d1;
+        }
+        body[data-theme="LUXURY_GOLD"] input,
+        body[data-theme="LUXURY_GOLD"] select,
+        body[data-theme="LUXURY_GOLD"] textarea {
+            background: #0f0f12;
+            border-color: #2e291f;
+            color: #faf8f5;
+        }
+        body[data-theme="LUXURY_GOLD"] .btn-submit {
+            background: linear-gradient(135deg, #d4af37 0%, #b5952f 100%);
+            color: #09090b;
+        }
+        body[data-theme="CLEAN_MINIMALIST"] {
+            background: #f1f5f9;
+        }
+        body[data-theme="CLEAN_MINIMALIST"] .header-banner {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+        }
+        body[data-theme="CLEAN_MINIMALIST"] .btn-submit {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+        }
+        body {
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: radial-gradient(circle at top, #1E293B 0%, #0B0F17 75%);
+            margin: 0;
+            padding: 20px 14px;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+            color: #0F172A;
+        }
+        .form-container {
+            background: #FFFFFF;
+            width: 100%;
+            max-width: 520px;
+            padding: 24px 22px;
+            border-radius: 24px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+            align-self: flex-start;
+        }
+        .header-banner {
+            background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
+            color: white;
+            padding: 18px 16px;
+            border-radius: 16px;
+            text-align: center;
+            margin-bottom: 18px;
+        }
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            color: #93C5FD;
+            font-size: 11.5px;
+            font-weight: 700;
+            text-decoration: none;
+            margin-bottom: 6px;
+            cursor: pointer;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        h2 {
+            text-align: center;
+            color: #FFFFFF;
+            margin: 0 0 4px 0;
+            font-size: 20px;
+            font-weight: 800;
+        }
+        .header-sub {
+            text-align: center;
+            font-size: 12px;
+            color: #CBD5E1;
+            margin: 0;
+        }
+        .form-group {
+            margin-bottom: 12px;
+        }
+        label {
+            display: block;
+            font-size: 11.5px;
+            font-weight: 700;
+            color: #475569;
+            margin-bottom: 5px;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 11px 13px;
+            border: 1.5px solid #CBD5E1;
+            border-radius: 10px;
+            box-sizing: border-box;
+            font-size: 13.5px;
+            font-family: inherit;
+            color: #0F172A;
+            background: #F8FAFC;
+            outline: none;
+            transition: all 0.2s;
+        }
+        input:focus, select:focus, textarea:focus {
+            border-color: #2563EB;
+            background: #FFFFFF;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+        }
+        .btn-submit {
+            background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
+            color: white;
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 800;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: 0.2s;
+            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.2);
+        }
+        .btn-submit:hover {
+            background: linear-gradient(135deg, #1E293B 0%, #334155 100%);
+        }
+        .btn-submit:disabled {
+            background: #94A3B8;
+            cursor: not-allowed;
+        }
+        #infoHarga {
+            font-size: 13.5px;
+            font-weight: 800;
+            color: #047857;
+            margin-top: 6px;
+            display: block;
+        }
+        /* Kotak Captcha Simpel */
+        .captcha-box {
+            background: #F8FAFC;
+            border: 1.5px dashed #94A3B8;
+            border-radius: 10px;
+            padding: 10px 12px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .captcha-question {
+            font-size: 14px;
+            font-weight: 800;
+            color: #0F172A;
+            background: #E2E8F0;
+            padding: 6px 10px;
+            border-radius: 8px;
+            white-space: nowrap;
+            user-select: none;
+        }
+        .captcha-input {
+            flex: 1;
+            padding: 8px 10px;
+            background: #FFFFFF;
+        }
+        .text-error {
+            font-size: 11.5px;
+            font-weight: 600;
+            color: #DC2626;
+            margin-top: 4px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="form-container">
+    <div class="header-banner">
+        <a id="linkKembaliProfil" class="back-link" href="#">&larr; Lihat Portofolio &amp; Layanan</a>
+        <div style="margin: 6px auto 10px; width: 64px; height: 64px; border-radius: 50%; overflow: hidden; background: #ffffff; border: 2px solid rgba(255,255,255,0.4); box-shadow: 0 6px 18px rgba(0,0,0,0.2);">
+            <img id="logoBookingHeader" src="/logo-kafela.svg" alt="Logo Brand" loading="lazy" decoding="async" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+        </div>
+        <h2 id="namaStudioLoading">Memuat Formulir Layanan...</h2>
+        <p class="header-sub">Silakan lengkapi formulir reservasi jadwal di bawah ini</p>
+    </div>
+
+    <!-- Nama Klien & Nomor WhatsApp (Horizontal) -->
+    <div class="form-group" style="display: flex; gap: 10px;">
+        <div style="flex: 1;">
+            <label>● Nama (Klien) *</label>
+            <input type="text" id="klienNama" placeholder="Nama Lengkap" autocomplete="name" required>
+        </div>
+        
+        <div style="flex: 1;">
+            <label>● Nomor WhatsApp *</label>
+            <input type="tel" id="klienWa" placeholder="081234567890" autocomplete="tel" inputmode="numeric" required>
+            <div id="errWa" class="text-error">Nomor WhatsApp tidak valid.</div>
+        </div>
+    </div>
+
+    <!-- Nama Acara -->
+    <div class="form-group">
+        <label>● Nama Acara / Keperluan *</label>
+        <input type="text" id="klienAcara" placeholder="Contoh: Wedding / Make Up / Wisuda / Acara / Konsultasi" required>
+    </div>
+
+    <!-- Tanggal & Waktu (Satu Baris) -->
+    <div class="form-group" style="display: flex; gap: 8px;">
+        <div style="flex: 1.4;">
+            <label>Tanggal *</label>
+            <input type="date" id="klienTanggal" required>
+        </div>
+
+        <div style="flex: 1;">
+            <label>Jam Mulai *</label>
+            <input type="time" id="klienJamMulai" required>
+        </div>
+
+        <div style="flex: 1;">
+            <label>Jam Selesai</label>
+            <input type="time" id="klienJamSelesai">
+        </div>
+    </div>
+
+    <!-- Lokasi -->
+    <div class="form-group">
+        <label>● Alamat / Lokasi Acara *</label>
+        <textarea id="klienLokasi" rows="2" placeholder="Lokasi acara / gedung / studio / alamat lengkap..." required></textarea>
+    </div>
+
+    <!-- Paket Layanan -->
+    <div class="form-group">
+        <label>● Pilihan Paket Layanan *</label>
+        <select id="klienPaket" required>
+            <option value="" disabled selected>Pilih Paket Layanan</option>
+        </select>
+        <span id="infoHarga"></span>
+    </div>
+
+    <!-- Kotak Spesifikasi Paket (Otomatis Muncul) -->
+    <div id="boxSpesifikasiPaket" style="display: none; background: #ECFDF5; border: 1px solid #10B981; border-radius: 10px; padding: 12px; margin-bottom: 14px;">
+        <label style="color: #047857; font-size: 11px; margin-bottom: 3px;">Spesifikasi Paket:</label>
+        <div id="textSpesifikasiPaket" style="font-size: 12.5px; color: #0F172A; line-height: 1.55; white-space: pre-wrap;">-</div>
+    </div>
+
+    <!-- Catatan Tambahan Klien -->
+    <div class="form-group">
+        <label>Catatan / Permintaan Khusus (Opsional)</label>
+        <textarea id="klienCatatan" rows="2" placeholder="Tulis catatan tambahan jika ada..."></textarea>
+    </div>
+
+    <!-- Kolom Nama Tambahan -->
+    <div class="form-group">
+        <label>Tambahan Layanan / Custom (Opsional)</label>
+        <input type="text" id="klienNamaTambahan" placeholder="Contoh: Tambahan item / request khusus">
+    </div>
+
+    <!-- DISEMBUNYIKAN: Kolom Harga Tambahan -->
+    <div class="form-group" style="display: none;">
+        <label>Biaya Tambahan (Rp) (Opsional)</label>
+        <input type="number" id="klienHargaTambahan" value="0" inputmode="numeric">
+    </div>
+
+    <div class="form-group" style="display: flex; gap: 10px;">
+        <div style="flex: 1;">
+            <label>Email (Opsional)</label>
+            <input type="email" id="klienEmail" placeholder="Email Aktif" autocomplete="email">
+        </div>
+        <div style="flex: 1;">
+            <label>Instagram / TikTok</label>
+            <input type="text" id="klienMedsos" placeholder="@username">
+        </div>
+    </div>
+
+    <!-- Captcha dan Tombol Simpan (Horizontal) -->
+    <label>Verifikasi Keamanan *</label>
+    <div style="display: flex; gap: 10px; align-items: stretch; margin-bottom: 5px;">
+        <div style="flex: 6; display: flex; flex-direction: column;">
+            <div class="captcha-box" style="margin-bottom: 0; height: 100%; box-sizing: border-box;">
+                <div id="labelCaptcha" class="captcha-question">? + ? =</div>
+                <input type="number" id="inputCaptcha" class="captcha-input" placeholder="Jawaban" required>
+            </div>
+        </div>
+
+        <div style="flex: 4; display: flex; flex-direction: column;">
+            <button id="btnKirimBooking" class="btn-submit" style="margin-top: 0; height: 100%; display: flex; align-items: center; justify-content: center; box-sizing: border-box;">Kirim Form</button>
+        </div>
+    </div>
+    
+    <div id="errCaptcha" class="text-error" style="margin-bottom: 12px;">Jawaban verifikasi salah, silakan coba lagi.</div>
+</div>
+
+<script type="module">
+    import { collection, getDocs, getDoc, doc, setDoc, query, where, getCountFromServer } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { db } from '/firebase-config.js'; 
+
+    const urlParams = new URLSearchParams(window.location.search);
+    let usernameParam = urlParams.get('id') || urlParams.get('studio');
+    if (!usernameParam) {
+        const cleanPath = window.location.pathname.replace(/^\/+|\/+$/g, '');
+        if (cleanPath.startsWith('b/')) {
+            usernameParam = cleanPath.substring(2).replace(/^\/+|\/+$/g, '');
+        }
+    }
+    const paketParam = urlParams.get('paket');
+    const descParam = urlParams.get('desc');
+    const lokasiParam = urlParams.get('lokasi');
+    const temaOverride = urlParams.get('tema');
+    if (temaOverride && ['MODERN_STUDIO', 'LUXURY_GOLD', 'CLEAN_MINIMALIST'].includes(temaOverride)) {
+        document.body.setAttribute('data-theme', temaOverride);
+    }
+    
+    const namaParam = urlParams.get('nama');
+    const waParam = urlParams.get('wa');
+
+    let ownerUid = null;
+    let dataPaketStudio = {};
+    let noWaOwner = "";
+
+    if (usernameParam) {
+        document.getElementById('linkKembaliProfil').href = `/profil.html?id=${encodeURIComponent(usernameParam)}${temaOverride ? '&tema=' + encodeURIComponent(temaOverride) : ''}`;
+    } else {
+        document.getElementById('linkKembaliProfil').style.display = 'none';
+    }
+
+    let captchaJawabanBenar = 0;
+    function buatCaptchaBaru() {
+        const bil1 = Math.floor(Math.random() * 9) + 1;
+        const bil2 = Math.floor(Math.random() * 9) + 1;
+        captchaJawabanBenar = bil1 + bil2;
+        document.getElementById('labelCaptcha').innerText = `${bil1} + ${bil2} =`;
+        document.getElementById('inputCaptcha').value = "";
+    }
+    buatCaptchaBaru();
+
+    if (lokasiParam) {
+        document.getElementById('klienLokasi').value = lokasiParam;
+    }
+
+    muatDataStudio();
+    if (namaParam) document.getElementById('klienNama').value = namaParam;
+    if (waParam) document.getElementById('klienWa').value = waParam;
+
+    function muatFormDenganData(dataBrand) {
+        if (!usernameParam) usernameParam = dataBrand.username || 'demo';
+        document.getElementById('linkKembaliProfil').href = `/profil.html?id=${encodeURIComponent(usernameParam)}${temaOverride ? '&tema=' + encodeURIComponent(temaOverride) : ''}`;
+        document.getElementById('linkKembaliProfil').style.display = 'inline-flex';
+
+        const temaAktif = temaOverride || dataBrand.temaWeb || 'MODERN_STUDIO';
+        if (['MODERN_STUDIO', 'LUXURY_GOLD', 'CLEAN_MINIMALIST'].includes(temaAktif)) {
+            document.body.setAttribute('data-theme', temaAktif);
+        }
+        noWaOwner = dataBrand.noWhatsApp || '083132304649';
+        const namaTampil = dataBrand.namaBrand || "Booking Formulir";
+        document.getElementById('namaStudioLoading').innerText = namaTampil;
+        document.title = "Form Booking - " + namaTampil;
+        const logoBookingEl = document.getElementById('logoBookingHeader');
+        if (logoBookingEl) {
+            logoBookingEl.loading = 'lazy';
+            logoBookingEl.decoding = 'async';
+            logoBookingEl.src = (dataBrand.logoBrandUrl && dataBrand.logoBrandUrl.trim() !== "")
+                ? dataBrand.logoBrandUrl
+                : "/logo-kafela.svg";
+        }
+
+        const hariIni = new Date().toISOString().split('T')[0];
+        document.getElementById('klienTanggal').setAttribute('min', hariIni);
+
+        const dropdownPaket = document.getElementById('klienPaket');
+        dropdownPaket.innerHTML = '<option value="" disabled selected>Pilih Paket Layanan</option>';
+        const listPaket = dataBrand.paketList || [
+            { namaPaket: 'Self Photo Studio (15 Menit)', hargaPaket: 75000, deskripsiPaket: 'Bebas ekspresi 15 menit, semua file Google Drive + Cetak 2 Strip 4R' },
+            { namaPaket: 'Paket Foto Wisuda & Keluarga Studio', hargaPaket: 350000, deskripsiPaket: 'Durasi 45 menit, maks 8 orang, 10 foto edit + Cetak 10R Frame' },
+            { namaPaket: 'Gold Wedding Documentation', hargaPaket: 5500000, deskripsiPaket: '2 Fotografer, 1 Videografer, Cinematic Highlight 3 menit, Album Magnetik' }
+        ];
+
+        listPaket.forEach(p => {
+            const namaPaket = p.namaPaket || p.nama || "Paket Layanan";
+            const harga = p.hargaPaket || p.harga || 0;
+            const deskripsi = p.deskripsiPaket || p.deskripsi || "Tidak ada rincian spesifikasi.";
+            dataPaketStudio[namaPaket] = { harga: harga, deskripsi: deskripsi };
+            dropdownPaket.innerHTML += `<option value="${namaPaket}">${namaPaket} — Rp ${parseInt(harga).toLocaleString('id-ID')}</option>`;
+        });
+
+        if (paketParam && dataPaketStudio[paketParam] !== undefined) {
+            dropdownPaket.value = paketParam;
+            document.getElementById('infoHarga').innerText = "Estimasi Biaya: Rp " + parseInt(dataPaketStudio[paketParam].harga).toLocaleString('id-ID');
+            const dataPaket = dataPaketStudio[paketParam];
+            if (dataPaket.deskripsi && dataPaket.deskripsi.trim() !== "" && dataPaket.deskripsi !== "-") {
+                document.getElementById('boxSpesifikasiPaket').style.display = 'block';
+                document.getElementById('textSpesifikasiPaket').innerText = dataPaket.deskripsi;
+            }
+        }
+
+        if (descParam) {
+            document.getElementById('klienCatatan').value = `Catatan Paket (${paketParam}): ${descParam}`;
+        }
+    }
+
+    async function muatDataStudio() {
+        try {
+            let docBrand = null;
+            const trimmedTarget = (usernameParam || '').trim();
+
+            // 0. Cek data demo di sessionStorage jika id=demo atau tanpa id
+            try {
+                const rawDemo = sessionStorage.getItem('demo_profile_data') || sessionStorage.getItem('current_owner_preview_draft');
+                if (rawDemo && (trimmedTarget === 'demo' || !trimmedTarget)) {
+                    const parsedDemo = JSON.parse(rawDemo);
+                    if (parsedDemo && typeof parsedDemo === 'object') {
+                        ownerUid = parsedDemo.ownerUid || 'demo-owner-kafela-001';
+                        muatFormDenganData(parsedDemo);
+                        return;
+                    }
+                }
+            } catch (eDemo) {}
+
+            if (trimmedTarget === 'demo' || !db) {
+                ownerUid = 'demo-owner-kafela-001';
+                muatFormDenganData({
+                    namaBrand: "Kafela's Photo Studio (Demo)",
+                    username: trimmedTarget || 'demo',
+                    noWhatsApp: '083132304649',
+                    paketList: [
+                        { namaPaket: 'Self Photo Studio (15 Menit)', hargaPaket: 75000, deskripsiPaket: 'Bebas ekspresi 15 menit, semua file Google Drive + Cetak 2 Strip 4R' },
+                        { namaPaket: 'Paket Foto Wisuda & Keluarga Studio', hargaPaket: 350000, deskripsiPaket: 'Durasi 45 menit, maks 8 orang, 10 foto edit + Cetak 10R Frame' },
+                        { namaPaket: 'Gold Wedding Documentation', hargaPaket: 5500000, deskripsiPaket: '2 Fotografer, 1 Videografer, Cinematic Highlight 3 menit, Album Magnetik' }
+                    ]
+                });
+                return;
+            }
+
+            if (trimmedTarget) {
+                try {
+                    const cleanSlug = trimmedTarget.toLowerCase().replace(/[^a-z0-9_-]/g, '-');
+                    let regDoc = await getDoc(doc(db, "brands_registry", cleanSlug));
+                    if (!regDoc.exists()) {
+                        const withHyphen = cleanSlug.replace(/([a-z]+)(tenda|studio|photo|wedding|cinema|event)/, '$1-$2');
+                        if (withHyphen !== cleanSlug) {
+                            regDoc = await getDoc(doc(db, "brands_registry", withHyphen));
+                        }
+                    }
+                    if (regDoc && regDoc.exists()) {
+                        const regData = regDoc.data();
+                        if (regData.ownerId) {
+                            const ownerSnap = await getDoc(doc(db, "owners", regData.ownerId));
+                            if (ownerSnap.exists()) {
+                                docBrand = ownerSnap;
+                                ownerUid = docBrand.id;
+                            }
+                        }
+                    }
+                } catch (eReg) {
+                    console.warn("Registry booking lookup skipped:", eReg);
+                }
+
+                if (!docBrand) {
+                    const docRef = await getDoc(doc(db, "owners", trimmedTarget));
+                    if (docRef.exists()) {
+                        docBrand = docRef;
+                        ownerUid = docBrand.id;
+                    } else {
+                        const q = query(collection(db, "owners"), where("username", "==", trimmedTarget));
+                        const querySnapshot = await getDocs(q);
+                        if (!querySnapshot.empty) {
+                            docBrand = querySnapshot.docs[0];
+                            ownerUid = docBrand.id;
+                        }
+                    }
+                }
+            }
+
+            if (!docBrand) {
+                const allOwnersSnap = await getDocs(collection(db, "owners"));
+                if (!allOwnersSnap.empty) {
+                    const cleanTargetSlug = trimmedTarget.toLowerCase().replace(/[^a-z0-9]/g, '');
+                    for (const dSnap of allOwnersSnap.docs) {
+                        const d = dSnap.data() || {};
+                        const uSlug = String(d.username || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+                        const bSlug = String(d.namaBrand || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+                        if (
+                            (cleanTargetSlug && (uSlug === cleanTargetSlug || bSlug === cleanTargetSlug)) ||
+                            dSnap.id.toLowerCase() === trimmedTarget.toLowerCase()
+                        ) {
+                            docBrand = dSnap;
+                            ownerUid = dSnap.id;
+                            break;
+                        }
+                    }
+                    if (!docBrand && !trimmedTarget) {
+                        docBrand = allOwnersSnap.docs[0];
+                        ownerUid = docBrand.id;
+                    }
+                }
+            }
+
+            if (!docBrand) {
+                document.getElementById('namaStudioLoading').innerText = "Profil Vendor Tidak Ditemukan";
+                document.getElementById('btnKirimBooking').disabled = true;
+                return;
+            }
+
+            const dataBrand = docBrand.data();
+            if (dataBrand.isBookingActive === false) {
+                document.querySelector('.form-container').innerHTML = `
+                    <div style="text-align:center; padding: 40px 10px; font-family:'Plus Jakarta Sans',sans-serif;">
+                        <div style="font-size:48px; margin-bottom:16px;">🔒</div>
+                        <h2 style="color:#E74C3C; font-size:22px; font-weight:800; margin-bottom:10px;">Form Booking Ditutup</h2>
+                        <p style="font-size:14px; color:#475569; line-height:1.6; margin-bottom:24px;">Maaf, form booking online untuk <b>${dataBrand.namaBrand || 'Studio'}</b> sedang ditutup sementara oleh pemilik studio. Silakan hubungi admin via WhatsApp untuk reservasi.</p>
+                        <a href="https://wa.me/${dataBrand.noWhatsApp || ''}" style="display:inline-block; padding:12px 24px; background:#25D366; color:white; border-radius:12px; text-decoration:none; font-weight:bold; font-size:14px; box-shadow:0 4px 12px rgba(37,211,102,0.3);">Chat WhatsApp Admin</a>
+                    </div>
+                `;
+                return;
+            }
+            if (!usernameParam) {
+                usernameParam = dataBrand.username || ownerUid;
+                document.getElementById('linkKembaliProfil').href = `/profil.html?id=${encodeURIComponent(usernameParam)}${temaOverride ? '&tema=' + encodeURIComponent(temaOverride) : ''}`;
+                document.getElementById('linkKembaliProfil').style.display = 'inline-flex';
+            }
+            const temaAktif = temaOverride || dataBrand.temaWeb || 'MODERN_STUDIO';
+            if (['MODERN_STUDIO', 'LUXURY_GOLD', 'CLEAN_MINIMALIST'].includes(temaAktif)) {
+                document.body.setAttribute('data-theme', temaAktif);
+            }
+            noWaOwner = dataBrand.noWhatsApp || "";
+            const namaTampil = dataBrand.namaBrand || "Booking Formulir";
+            document.getElementById('namaStudioLoading').innerText = namaTampil;
+            document.title = "Form Booking - " + namaTampil;
+            const logoBookingEl = document.getElementById('logoBookingHeader');
+            if (logoBookingEl) {
+                logoBookingEl.src = (dataBrand.logoBrandUrl && dataBrand.logoBrandUrl.trim() !== "")
+                    ? dataBrand.logoBrandUrl
+                    : "/logo-kafela.svg";
+            }
+
+            try {
+                const qWeb = query(collection(db, "owners", ownerUid, "jadwal"), where("sumber", "==", "WEB"), where("status", "==", "Booking Web"));
+                const snapshotCount = await getCountFromServer(qWeb);
+                
+                if (snapshotCount.data().count >= 30) {
+                    document.querySelector('.form-container').innerHTML = `
+                        <h2 style="color:#E74C3C; text-align:center;">Antrean Penuh ⛔</h2>
+                        <p style="text-align: center; font-size: 14px; color: #34495E; line-height: 1.6;">Maaf, antrean pesanan online sedang mencapai batas maksimal.</p>
+                        <a href="https://wa.me/${validasiDanFormatWhatsApp(noWaOwner) || ''}" style="display:block; text-align:center; padding:12px; background:#27AE60; color:white; border-radius:8px; text-decoration:none; font-weight:bold; margin-top:16px;">Hubungi WhatsApp Admin</a>
+                    `;
+                    return; 
+                }
+            } catch (errCount) {
+                console.warn("Pengecekan batas antrean dilewati.", errCount);
+            }
+
+            const hariIni = new Date().toISOString().split('T')[0];
+            document.getElementById('klienTanggal').setAttribute('min', hariIni);
+
+            const dropdownPaket = document.getElementById('klienPaket');
+            const snapPaket = await getDocs(collection(db, "owners", ownerUid, "paket_layanan"));
+            
+            dropdownPaket.innerHTML = '<option value="" disabled selected>Pilih Paket Layanan</option>';
+            snapPaket.forEach(docSnap => {
+                const data = docSnap.data();
+                const namaPaket = data.namaPaket || data.nama || docSnap.id;
+                const harga = data.hargaPaket || data.harga || 0;
+                const deskripsi = data.deskripsiPaket || data.deskripsi || "Tidak ada rincian spesifikasi."; 
+                
+                dataPaketStudio[namaPaket] = {
+                    harga: harga,
+                    deskripsi: deskripsi
+                };
+                dropdownPaket.innerHTML += `<option value="${namaPaket}">${namaPaket} — Rp ${parseInt(harga).toLocaleString('id-ID')}</option>`;
+            });
+
+            if (paketParam && dataPaketStudio[paketParam] !== undefined) {
+                dropdownPaket.value = paketParam;
+                document.getElementById('infoHarga').innerText = "Estimasi Biaya: Rp " + parseInt(dataPaketStudio[paketParam].harga).toLocaleString('id-ID');
+                const dataPaket = dataPaketStudio[paketParam];
+                if (dataPaket.deskripsi && dataPaket.deskripsi.trim() !== "" && dataPaket.deskripsi !== "-") {
+                    document.getElementById('boxSpesifikasiPaket').style.display = 'block';
+                    document.getElementById('textSpesifikasiPaket').innerText = dataPaket.deskripsi;
+                }
+            }
+
+            if (descParam) {
+                document.getElementById('klienCatatan').value = `Catatan Paket (${paketParam}): ${descParam}`;
+            }
+
+        } catch (error) {
+            console.error(error);
+            document.getElementById('namaStudioLoading').innerText = "Gagal memuat data studio";
+        }
+    }
+
+    document.getElementById('klienPaket').addEventListener('change', (e) => {
+        const paketDipilih = e.target.value;
+        const dataPaket = dataPaketStudio[paketDipilih] || { harga: 0, deskripsi: "-" };
+        
+        document.getElementById('infoHarga').innerText = "Estimasi Biaya: Rp " + parseInt(dataPaket.harga).toLocaleString('id-ID');
+        
+        const boxSpesifikasi = document.getElementById('boxSpesifikasiPaket');
+        const textSpesifikasi = document.getElementById('textSpesifikasiPaket');
+        
+        if (boxSpesifikasi && textSpesifikasi) {
+            if (dataPaket.deskripsi && dataPaket.deskripsi.trim() !== "" && dataPaket.deskripsi !== "-") {
+                boxSpesifikasi.style.display = 'block';
+                textSpesifikasi.innerText = dataPaket.deskripsi;
+            } else {
+                boxSpesifikasi.style.display = 'none';
+            }
+        }
+    });
+
+    function validasiDanFormatWhatsApp(no) {
+        let clean = no.replace(/[^0-9]/g, '');
+        if (clean.startsWith('62')) {
+        } else if (clean.startsWith('0')) {
+            clean = '62' + clean.substring(1);
+        } else if (clean.startsWith('8')) {
+            clean = '62' + clean;
+        } else {
+            return null; 
+        }
+        if (clean.length < 10 || clean.length > 15) return null;
+        return clean;
+    }
+
+    let formSudahDikirim = false;
+
+    document.getElementById('btnKirimBooking').addEventListener('click', async () => {
+        if (!ownerUid) return alert("Data studio tidak valid!");
+
+        const errWa = document.getElementById('errWa');
+        const errCaptcha = document.getElementById('errCaptcha');
+        errWa.style.display = 'none';
+        errCaptcha.style.display = 'none';
+
+        const nama = document.getElementById('klienNama').value.trim();
+        const emailTercatat = document.getElementById('klienEmail').value.trim();
+        const waRaw = document.getElementById('klienWa').value.trim();
+        const medsos = document.getElementById('klienMedsos').value.trim();
+        const acara = document.getElementById('klienAcara').value.trim();
+        const tanggal = document.getElementById('klienTanggal').value;
+        const jamMulai = document.getElementById('klienJamMulai').value;
+        const jamSelesai = document.getElementById('klienJamSelesai').value;
+        const lokasi = document.getElementById('klienLokasi').value.trim();
+        const paket = document.getElementById('klienPaket').value;
+        const catatan = document.getElementById('klienCatatan').value.trim();
+        const jawabanCaptcha = parseInt(document.getElementById('inputCaptcha').value.trim(), 10);
+
+        if (!nama || !waRaw || !acara || !tanggal || !jamMulai || !lokasi || !paket) {
+            return alert("Harap isi semua kolom wajib bertanda bintang (*)");
+        }
+
+        const waBersih = validasiDanFormatWhatsApp(waRaw);
+        if (!waBersih) {
+            errWa.style.display = 'block';
+            document.getElementById('klienWa').focus();
+            return;
+        }
+
+        if (jawabanCaptcha !== captchaJawabanBenar) {
+            errCaptcha.style.display = 'block';
+            document.getElementById('inputCaptcha').focus();
+            buatCaptchaBaru(); 
+            return;
+        }
+
+        const btn = document.getElementById('btnKirimBooking');
+        btn.innerText = "Memproses...";
+        btn.disabled = true;
+
+        try {
+            const tMulai = new Date(`${tanggal}T${jamMulai}`).getTime();
+            const tSelesai = jamSelesai ? new Date(`${tanggal}T${jamSelesai}`).getTime() : 0;
+            const tTgl = new Date(`${tanggal}T00:00:00`).getTime();
+            
+            const hargaPaketDasar = (dataPaketStudio[paket] && dataPaketStudio[paket].harga) ? parseInt(dataPaketStudio[paket].harga) : 0;
+            const jadwalBaruRef = doc(collection(db, "owners", ownerUid, "jadwal"));
+            
+            let teksCatatan = catatan ? catatan.trim() : "-";
+            if (medsos) teksCatatan += `\n(Akun: ${medsos})`;
+            if (emailTercatat) teksCatatan += `\n(Email: ${emailTercatat})`;
+
+            const inputNamaTambahan = document.getElementById('klienNamaTambahan') ? document.getElementById('klienNamaTambahan').value.trim() : "";
+
+            if (ownerUid === 'demo-owner-kafela-001' || usernameParam === 'demo') {
+                try {
+                    const demoJadwalBaru = {
+                        idJadwal: 'WEB-DEMO-' + Date.now().toString().slice(-4),
+                        namaAcara: acara,
+                        namaKlien: nama,
+                        namaPic: nama,
+                        waPic: waBersih,
+                        akunMedsos: medsos || "-",
+                        tanggalMulai: tTgl,
+                        tanggalSelesaiEvent: tTgl,
+                        waktuMulai: tMulai,
+                        waktuSelesai: tSelesai,
+                        lokasi: lokasi,
+                        paket: paket,
+                        hargaPaketDasar: hargaPaketDasar,
+                        namaTambahan: inputNamaTambahan,
+                        hargaTambahan: 0,
+                        hargaKotor: hargaPaketDasar,
+                        diskon: 0,
+                        dpDibayar: 0,
+                        status: "Menunggu Konfirmasi",
+                        sumber: "WEB",
+                        catatan: teksCatatan
+                    };
+
+                    let demoTargetId = ownerUid || 'demo-owner-kafela-001';
+                    try {
+                        const metaRaw = localStorage.getItem('KAFELA_SESSION_META_V5');
+                        if (metaRaw) {
+                            const metaParsed = JSON.parse(metaRaw);
+                            if (metaParsed && metaParsed.sessionMode === 'DEMO' && metaParsed.targetOwnerId) {
+                                demoTargetId = metaParsed.targetOwnerId;
+                            }
+                        }
+                    } catch {}
+
+                    const v5Key = 'KAFELA_WORKSPACE_V5_' + demoTargetId;
+                    const v5Raw = localStorage.getItem(v5Key);
+                    if (v5Raw) {
+                        const parsedV5 = JSON.parse(v5Raw);
+                        parsedV5.jadwalAktif = parsedV5.jadwalAktif || [];
+                        parsedV5.jadwalAktif.unshift(demoJadwalBaru);
+                        localStorage.setItem(v5Key, JSON.stringify(parsedV5));
+                    }
+
+                    const cacheRaw = localStorage.getItem('KAFELA_PC_WORKSPACE_CACHE_V4');
+                    if (cacheRaw) {
+                        const parsed = JSON.parse(cacheRaw);
+                        parsed.jadwalAktif = parsed.jadwalAktif || [];
+                        parsed.jadwalAktif.unshift(demoJadwalBaru);
+                        localStorage.setItem('KAFELA_PC_WORKSPACE_CACHE_V4', JSON.stringify(parsed));
+                    }
+                } catch (eCache) {
+                    console.warn("Demo booking local cache:", eCache);
+                }
+            } else {
+                await setDoc(jadwalBaruRef, {
+                    idJadwal: jadwalBaruRef.id,
+                    namaAcara: acara,
+                    namaKlien: nama,
+                    namaPic: nama,
+                    waPic: waBersih,
+                    akunMedsos: medsos || "-",
+                    tanggalMulai: tTgl,
+                    tanggalSelesaiEvent: tTgl,
+                    waktuMulai: tMulai,
+                    waktuSelesai: tSelesai,
+                    lokasi: lokasi,
+                    paket: paket,
+                    hargaPaketDasar: hargaPaketDasar,
+                    namaTambahan: inputNamaTambahan,
+                    hargaTambahan: 0,
+                    hargaKotor: hargaPaketDasar,
+                    diskon: 0,
+                    dpDibayar: 0,
+                    status: "Booking Web",
+                    sumber: "WEB",
+                    catatan: teksCatatan
+                });
+            }
+
+            let waTujuan = validasiDanFormatWhatsApp(noWaOwner);
+            if (!waTujuan) {
+                alert("Booking berhasil disimpan ke sistem! Hubungi studio manual.");
+                window.location.reload();
+                return;
+            }
+
+            const formatTgl = new Date(`${tanggal}T00:00:00`).toLocaleDateString('id-ID', {
+                weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
+            });
+
+            const waTambahan = inputNamaTambahan ? `\n*Request Tambahan:* ${inputNamaTambahan}` : '';
+            const pesanWa = 
+`Halo kak, saya baru saja mengirim formulir booking online:
+
+*Nama Klien:* ${nama}
+*WhatsApp:* ${waBersih}
+${medsos ? `*Instagram/TikTok:* ${medsos}\n` : ''}*Acara:* ${acara}
+*Tanggal:* ${formatTgl}
+*Waktu:* ${jamMulai} WIB${jamSelesai ? ` s/d ${jamSelesai} WIB` : ''}
+*Paket:* ${paket}${waTambahan}
+*Lokasi:* ${lokasi}
+*Catatan:* ${catatan || '-'}
+
+Mohon konfirmasi ketersediaan jadwalnya kak. Terima kasih! 🙏`;
+
+            formSudahDikirim = true;
+
+            alert("Formulir terkirim! Anda akan dialihkan ke WhatsApp.");
+            window.location.href = `https://wa.me/${waTujuan}?text=${encodeURIComponent(pesanWa)}`;
+
+        } catch (error) {
+            console.error(error);
+            alert("Terjadi kesalahan sistem. Silakan coba kembali.");
+            btn.innerText = "Kirim Form";
+            btn.disabled = false;
+            buatCaptchaBaru();
+        }
+    });
+
+    window.addEventListener('beforeunload', (e) => {
+        if (!formSudahDikirim) {
+            e.preventDefault();
+            e.returnValue = '';
+        }
+    });
+</script>
+</body>
+</html>

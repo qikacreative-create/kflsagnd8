@@ -1,0 +1,198 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Global default-deny safety net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // --- Helpers ---
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function hasTimDoc(uid) {
+      return exists(/databases/$(database)/documents/tim_studio/$(uid));
+    }
+
+    function getTimDoc(uid) {
+      return get(/databases/$(database)/documents/tim_studio/$(uid));
+    }
+
+    function isOwner(ownerId) {
+      return isSignedIn() && request.auth.uid == ownerId;
+    }
+
+    function isAdmin(ownerId) {
+      return isSignedIn() && hasTimDoc(request.auth.uid) && getTimDoc(request.auth.uid).data.ownerParentId == ownerId && getTimDoc(request.auth.uid).data.role == 'admin';
+    }
+
+    function isStaff(ownerId) {
+      return isSignedIn() && hasTimDoc(request.auth.uid) && getTimDoc(request.auth.uid).data.ownerParentId == ownerId && getTimDoc(request.auth.uid).data.role == 'anggota';
+    }
+
+    function isSuperAdmin() {
+      return isSignedIn() && (
+        (
+          request.auth.token.email_verified == true && (
+            request.auth.token.email == 'kafelassuci@gmail.com' ||
+            request.auth.token.email == 'qikacreative@gmail.com'
+          )
+        ) ||
+        (hasTimDoc(request.auth.uid) && getTimDoc(request.auth.uid).data.role == 'super_admin')
+      );
+    }
+
+    function isValidStaffRole(data) {
+      return 'role' in data && (data.role == 'admin' || data.role == 'anggota');
+    }
+
+    // --- Rules ---
+
+    // 0. Direktori Pendaftaran Brand Multi-Tenant
+    match /brands_registry/{slug} {
+      // Dibaca publik agar lookup brand via subdomain / custom domain / slug selalu berhasil
+      allow read: if true;
+      // Hanya izinkan pembuatan jika signed-in dan menyertakan ownerId milik sendiri tanpa memanipulasi saldo
+      allow create: if isSignedIn() && request.resource.data.ownerId == request.auth.uid && (
+        !('saldo' in request.resource.data) || request.resource.data.saldo == 0
+      );
+      // Hanya pemilik brand (atau Super Admin) yang berhak update atau menghapus slug brand miliknya
+      allow update: if isSuperAdmin() || (
+        isSignedIn() && resource.data.ownerId == request.auth.uid && (
+          !request.resource.data.diff(resource.data).affectedKeys().hasAny(['saldo']) ||
+          (
+            request.resource.data.saldo is number &&
+            resource.data.saldo is number &&
+            request.resource.data.saldo <= resource.data.saldo
+          )
+        )
+      );
+      allow delete: if isSignedIn() && (resource.data.ownerId == request.auth.uid || isSuperAdmin());
+    }
+
+    // 1. Indeks peran staf (dikunci dari eskalasi role super_admin atau pembajakan ownerParentId)
+    match /tim_studio/{uid} {
+      allow read: if isSignedIn() && (
+        request.auth.uid == uid ||
+        isSuperAdmin() ||
+        (hasTimDoc(request.auth.uid) && getTimDoc(request.auth.uid).data.role == 'admin' && getTimDoc(request.auth.uid).data.ownerParentId == resource.data.ownerParentId) ||
+        (exists(/databases/$(database)/documents/owners/$(request.auth.uid)) && resource.data.ownerParentId == request.auth.uid)
+      );
+
+      allow create: if isSuperAdmin() || (
+        isSignedIn() &&
+        isValidStaffRole(request.resource.data) && (
+          (
+            exists(/databases/$(database)/documents/owners/$(request.auth.uid)) &&
+            request.resource.data.ownerParentId == request.auth.uid
+          ) ||
+          (
+            request.auth.uid == uid &&
+            'ownerParentId' in request.resource.data &&
+            request.resource.data.ownerParentId is string &&
+            exists(/databases/$(database)/documents/owners/$(request.resource.data.ownerParentId)/tim/$(uid)) &&
+            get(/databases/$(database)/documents/owners/$(request.resource.data.ownerParentId)/tim/$(uid)).data.role == request.resource.data.role
+          )
+        )
+      );
+
+      allow update: if isSuperAdmin() || (
+        isSignedIn() &&
+        isValidStaffRole(request.resource.data) && (
+          (
+            exists(/databases/$(database)/documents/owners/$(request.auth.uid)) &&
+            resource.data.ownerParentId == request.auth.uid &&
+            request.resource.data.ownerParentId == request.auth.uid
+          ) ||
+          (
+            request.auth.uid == uid &&
+            request.resource.data.role == resource.data.role &&
+            request.resource.data.ownerParentId == resource.data.ownerParentId
+          )
+        )
+      );
+
+      allow delete: if isSuperAdmin() || (
+        isSignedIn() &&
+        exists(/databases/$(database)/documents/owners/$(request.auth.uid)) &&
+        resource.data.ownerParentId == request.auth.uid
+      );
+    }
+
+    // 2. Data Owner
+    match /owners/{ownerId} {
+      // Profil owner (namaBrand, bio, portofolio, logo) dapat dibaca publik untuk booking.html & profil.html
+      allow read: if true;
+      allow create: if isSignedIn() && request.auth.uid == ownerId && (
+        !('saldo' in request.resource.data) || request.resource.data.saldo == 0
+      );
+      allow update: if isSuperAdmin() || (
+        isOwner(ownerId) && (
+          !request.resource.data.diff(resource.data).affectedKeys().hasAny(['saldo']) ||
+          (
+            request.resource.data.saldo is number &&
+            resource.data.saldo is number &&
+            request.resource.data.saldo <= resource.data.saldo
+          )
+        )
+      ) || (
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['visitsToday', 'lastResetDate']) &&
+        request.resource.data.visitsToday is number &&
+        request.resource.data.visitsToday >= 1 &&
+        request.resource.data.visitsToday <= 1000 &&
+        request.resource.data.lastResetDate is number
+      );
+      allow delete: if isOwner(ownerId) || isSuperAdmin();
+
+      // Sub-koleksi Tim Studio
+      match /tim/{staffId} {
+        allow read: if isOwner(ownerId) || isAdmin(ownerId) || isSuperAdmin() || (isSignedIn() && request.auth.uid == staffId);
+        allow write: if isOwner(ownerId) || isSuperAdmin();
+      }
+
+      // Sub-koleksi Jadwal
+      match /jadwal/{jadwalId} {
+        // Staff/Admin/Owner dapat membaca semua jadwal
+        allow read: if isOwner(ownerId) || isAdmin(ownerId) || isStaff(ownerId) || isSuperAdmin();
+        // Pembuatan jadwal: Owner, Admin, atau Formulir Booking Web Publik (sumber == 'WEB')
+        allow create: if isOwner(ownerId) || isAdmin(ownerId) || isSuperAdmin() || (
+          request.resource.data.sumber == 'WEB' &&
+          request.resource.data.status == 'Booking Web'
+        );
+        allow update, delete: if isOwner(ownerId) || isAdmin(ownerId) || isSuperAdmin();
+      }
+
+      // Sub-koleksi Paket Layanan (Katalog Layanan Publik)
+      match /paket_layanan/{paketId} {
+        allow read: if true;
+        allow write: if isOwner(ownerId) || isAdmin(ownerId) || isSuperAdmin();
+      }
+
+      // Sub-koleksi Galeri Web Portofolio (Publik)
+      match /galeri_web/{galeriId} {
+        allow read: if true;
+        allow write: if isOwner(ownerId) || isAdmin(ownerId) || isSuperAdmin();
+      }
+
+      // Sub-koleksi Pengaturan (Rekening, Konfigurasi Studio)
+      match /pengaturan/{pengaturanId} {
+        // Rekening dapat dibaca untuk struk/booking pembayaran
+        allow read: if true;
+        allow write: if isOwner(ownerId) || isAdmin(ownerId) || isSuperAdmin();
+      }
+
+      // Sub-koleksi Arsip Kompresi
+      match /arsip_kompresi/{arsipId} {
+        allow read: if isOwner(ownerId) || isAdmin(ownerId) || isSuperAdmin();
+        allow write: if isOwner(ownerId) || isAdmin(ownerId) || isSuperAdmin();
+      }
+
+      // Sub-koleksi Pelanggan (Riwayat Data Kontak Pelanggan)
+      match /pelanggan/{pelangganId} {
+        allow read: if isOwner(ownerId) || isAdmin(ownerId) || isStaff(ownerId) || isSuperAdmin();
+        allow write: if isOwner(ownerId) || isAdmin(ownerId) || isSuperAdmin();
+      }
+    }
+  }
+}
